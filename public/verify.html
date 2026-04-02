@@ -194,10 +194,14 @@
       const tid = params.get('TID') || params.get('tid');
 
       if (!tid || tid.trim() === '') {
-        // No TID in URL — someone visited /verify directly without a TID.
-        // Redirect silently to the site homepage so the company page loads normally.
-        // The Next.js app handles '/' — this just bounces the user back there.
-        window.location.replace('/');
+        // No TID in URL — someone visited /verify.html directly without a TID.
+        // Show error rather than redirecting to '/' — redirecting to '/' would
+        // trigger the netlify.toml TID rule again if any TID param is present,
+        // causing an infinite redirect loop. Showing an error is safer.
+        showError(
+          'No Transaction ID found in this link. ' +
+          'Please use the full verification link from your message.'
+        );
         return;
       }
 

@@ -1,21 +1,29 @@
-# example netlify.toml
- # Rule 1: Catch Uppercase TID parameter (Canonical)
+# Prismatom Trust Page redirect rules
+#
+# IMPORTANT: from = "/" not "/*"
+# Using "/*" matches EVERY path including /verify.html?TID=...
+# which causes an infinite redirect loop (ERR_TOO_MANY_REDIRECTS).
+# Using "/" matches only the root path — the SMS link destination.
+
+# Rule 1: Catch uppercase TID parameter at root (canonical form)
+# Matches: bluedip.in?TID=abc  and  bluedip.in/?TID=abc
 [[redirects]]
-  from = "/*"
+  from = "/"
   query = {TID = ":tid"}
   to = "/verify.html?TID=:tid"
-  status = 301
+  status = 302
   force = true
 
-# Rule 2: Catch Lowercase tid parameter
+# Rule 2: Catch lowercase tid parameter at root (defensive fallback)
+# Matches: bluedip.in?tid=abc  and  bluedip.in/?tid=abc
 [[redirects]]
-  from = "/*"
+  from = "/"
   query = {tid = ":tid"}
   to = "/verify.html?TID=:tid"
-  status = 301
+  status = 302
   force = true
 
-# Rule 3: Direct /verify path mapping
+# Rule 3: Direct /verify path → /verify.html (convenience mapping)
 [[redirects]]
   from = "/verify"
   to = "/verify.html"
