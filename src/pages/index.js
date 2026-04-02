@@ -1,9 +1,16 @@
 import CustomImage from "@/modules/common/components/image/image";
 import React, { useState } from "react";
 import Slider from "react-slick";
-import Lottie from "lottie-react";
+import dynamic from "next/dynamic";
 import webjson from "../modules/home/json/season.json";
 import mobilejson from "../modules/home/json/season mobile.json";
+
+// lottie-react wraps lottie-web, which calls document.createElement at module
+// load time. During Next.js SSR there is no document — this crashes the build.
+// dynamic() with ssr:false defers the import to the browser only, after the
+// DOM is available. The component renders nothing on the server and hydrates
+// client-side, which is the correct behaviour for a pure animation.
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 export default function Index() {
   const [activeTab, setActiveTab] = useState(1);
